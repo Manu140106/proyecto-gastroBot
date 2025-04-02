@@ -7,6 +7,7 @@ package Repository;
 import DataBase.DatabaseConfig;
 import dto.IngredienteDTO;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -17,24 +18,30 @@ import java.sql.Statement;
  */
 public class IngredientesRepository {
     
-     public IngredienteDTO findById(int idIngrediente) throws SQLException {
-        String query = "SELECT * FROM  WHERE preferencia ingrediente = " + idIngrediente;
-        try (Connection connection = DatabaseConfig.getConnection();
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(query)) {
+    public IngredienteDTO findById(int idIngrediente) throws SQLException {
+    String query = "SELECT * FROM ingredientes WHERE idingrediente = ?"; 
+    
+    try (Connection connection = DatabaseConfig.getConnection();
+         PreparedStatement statement = connection.prepareStatement(query)) {
+        
+        
+        statement.setInt(1, idIngrediente);
+        
+        try (ResultSet resultSet = statement.executeQuery()) {
             if (resultSet.next()) {
                 return new IngredienteDTO(
                     resultSet.getInt("idingrediente"),
                     resultSet.getString("nombre"),
+                    resultSet.getString("categoria"), 
                     resultSet.getDate("fechaVencimiento"),
                     resultSet.getDouble("cantidad"),
-                    resultSet.getInt("Idusuario"),
-                    resultSet.getString("Categoria")                     
-    );
-        } else {
-        return null;
-             }
+                    resultSet.getInt("idusuario")  
+                );  
+            } else {
+                return null;
+            }
         }
+    }
 }
     
 }

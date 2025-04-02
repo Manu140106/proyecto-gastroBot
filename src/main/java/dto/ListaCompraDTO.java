@@ -14,9 +14,9 @@ public class ListaCompraDTO {
     
     private int idListaCompra;
     private int idUsuario;
-    private List<IngredienteDTO> ingredientes; 
+    private String ingredientes; 
 
-    public ListaCompraDTO(int idListaCompra, int idUsuario, List<IngredienteDTO> ingredientes) {
+    public ListaCompraDTO(int idListaCompra, int idUsuario, String ingredientes) {
         this.idListaCompra = idListaCompra;
         this.idUsuario = idUsuario;
         this.ingredientes = ingredientes;
@@ -40,11 +40,11 @@ public class ListaCompraDTO {
         this.idUsuario = idUsuario;
     }
 
-    public List<IngredienteDTO> getIngredientes() {
+    public String getIngredientes() {
         return ingredientes;
     }
 
-    public void setIngredientes(List<IngredienteDTO> ingredientes) {
+    public void setIngredientes(String ingredientes) {
         this.ingredientes = ingredientes;
     }
 
