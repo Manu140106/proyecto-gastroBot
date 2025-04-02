@@ -17,8 +17,8 @@ import java.sql.Statement;
  */
 public class UserRepository {
     
-    public UserDTO findById(String nombre) throws SQLException {
-        String query = "SELECT * FROM user WHERE nombre = " + nombre;
+    public UserDTO findById(int id) throws SQLException {
+        String query = "SELECT * FROM user WHERE idUsuario = " + id;
         try (Connection connection = DatabaseConfig.getConnection();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query)) {

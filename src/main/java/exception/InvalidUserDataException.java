@@ -8,6 +8,9 @@ package exception;
  *
  * @author Carolina
  */
-public class InvalidUserDataException {
+public class InvalidUserDataException extends Exception {
+    public InvalidUserDataException (String message){
+        super(message);
+    }
     
 }

@@ -9,5 +9,12 @@ package validator;
  * @author Carolina
  */
 public class UserValidator {
+    public static boolean validateNombre(String nombre){
+        return nombre != null && !nombre.trim().isEmpty();
+    }
+    
+    public static boolean validateCorreo(String correo){
+        return correo != null && correo.contains("@");
+    }
     
 }
