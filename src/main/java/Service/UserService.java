@@ -4,10 +4,15 @@
  */
 package Service;
 
+import Repository.UserRepository;
+
 /**
  *
  * @author Carolina
  */
 public class UserService {
+    
+    private UserRepository userRepository = new UserRepository();
+    
     
 }

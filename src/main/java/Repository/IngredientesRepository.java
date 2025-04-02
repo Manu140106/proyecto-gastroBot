@@ -44,4 +44,11 @@ public class IngredientesRepository {
     }
 }
     
+     public void save(IngredienteDTO ingrediente) throws SQLException {
+    String query = "INSERT INTO ingrediente  (nombre, idIngrediente ,categoria, fecha_vencimiento, cantidad, idUsuario ) VALUES ('" +ingrediente.getNombre() + "', '" + ingrediente.getIdIngrediente()+  "', '" + ingrediente.getCategoria()+ "," + ingrediente.getFechaVencimiento()+ "," +ingrediente.getCantidad()+"," +ingrediente.getIdUsuario() ;
+        try (Connection connection = DatabaseConfig.getConnection();
+            Statement statement = connection.createStatement()) {
+            statement.executeUpdate(query);
+            }
+    }
 }
