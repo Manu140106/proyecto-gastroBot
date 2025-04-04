@@ -35,7 +35,7 @@ public class ListaCompraRepository {
         }
 }
         public void save(ListaCompraDTO listaCompra) throws SQLException {
-    String query = "INSERT INTO listacompra  (idListaCompra ,ingredientes, idUsuario ) VALUES ('" +listaCompra.getIdListaCompra() + "', '" + listaCompra.getIngredientes()+  "', '"  +listaCompra.getIdUsuario() ;
+        String query = "INSERT INTO listacompra  (idListaCompra ,ingredientes, idUsuario ) VALUES ('" +listaCompra.getIdListaCompra() + "', '" + listaCompra.getIngredientes()+  "', '"  +listaCompra.getIdUsuario() ;
         try (Connection connection = DatabaseConfig.getConnection();
             Statement statement = connection.createStatement()) {
             statement.executeUpdate(query);
