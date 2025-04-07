@@ -45,14 +45,18 @@ public class UserRepository {
     
     
 
-public void save(UserDTO Usuario) throws SQLException {
-    String query = "INSERT INTO Usuario (idUusario, nombre, correo,contraseña) VALUES ('" + Usuario.getNombre() + "', '" 
-                    + Usuario.getCorreo() + "', '" 
-                    + Usuario.getContraseña() + "')";
+public void save(UserDTO usuario) throws SQLException {
+    String query = "INSERT INTO Usuario (nombre, correo, contraseña) VALUES (?, ?, ?)";
+    
     try (Connection connection = DatabaseConfig.getConnection();
-        Statement statement = connection.createStatement()) {
-        statement.executeUpdate(query);
-}
+         PreparedStatement statement = connection.prepareStatement(query)) {
+        
+        statement.setString(1, usuario.getNombre());
+        statement.setString(2, usuario.getCorreo());
+        statement.setString(3, usuario.getContraseña());
+
+        statement.executeUpdate();
+    }
 }
 
 public void actualizarContraseña(String correo, String nuevaContraseña) throws SQLException {

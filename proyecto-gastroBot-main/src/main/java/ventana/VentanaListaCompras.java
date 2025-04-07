@@ -21,16 +21,18 @@ import validator.ProductoListaValidator;
  * @author Carolina
  */
 public class VentanaListaCompras extends javax.swing.JFrame {
-    private int idUsuario;
+    
+    private DefaultTableModel modeloTabla;
+    private ProductoListaService productoService = new ProductoListaService();
 
     /*
      * Creates new form VentanaListaCompras
      */
     public VentanaListaCompras() {
         initComponents();
-        limpiarCampos();
-        asegurarListaCompra();
-        this.idUsuario = idUsuario;
+        modeloTabla = new DefaultTableModel(new Object[]{"Producto", "Precio"}, 0);
+        tablaCompra.setModel(modeloTabla);
+        
      
         
     }
@@ -166,181 +168,66 @@ public class VentanaListaCompras extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
-        // TODO add your handling code here:
-         VentanaGeneral ventana = new VentanaGeneral();
-        ventana.setVisible(true);
-        this.dispose();
+       VentanaGeneral Ventana= new VentanaGeneral();
+    Ventana.setVisible(true);
+    this.dispose();
     }//GEN-LAST:event_btnVolverActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        // TODO add your handling code here:
-        
-        int fila = tablaCompra.getSelectedRow();
-    if (fila == -1) {
-        JOptionPane.showMessageDialog(this, "Selecciona un producto para eliminar");
-        return;
-    }
-
-    int idProducto = (int) tablaCompra.getValueAt(fila, 0);
-
-    try {
-        ProductoListaService service = new ProductoListaService();
-        service.eliminarProducto(idProducto);
-        JOptionPane.showMessageDialog(this, "Producto eliminado exitosamente");
-        cargarProductos();
-        limpiarCampos();
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, "Error al eliminar: " + e.getMessage());
+    int filaSeleccionada = tablaCompra.getSelectedRow();
+    if (filaSeleccionada != -1) {
+        DefaultTableModel model = (DefaultTableModel) tablaCompra.getModel();
+        model.removeRow(filaSeleccionada);
+    } else {
+        JOptionPane.showMessageDialog(this, "Selecciona una fila para eliminar.");
     }
         
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
         // TODO add your handling code here:
-        String nombre = txtNombre.getText();
-    String precioTexto = txtPrecio.getText();
+   String nombre = txtNombre.getText();
+    String precio = txtPrecio.getText();
 
-    try {
-        double precio = Double.parseDouble(precioTexto);
-        int idListaCompra = obtenerIdListaCompraDelUsuario(); 
-
-        ProductoListaDTO producto = new ProductoListaDTO();
-        producto.setNombreProducto(nombre);
-        producto.setPrecio(precio);
-        producto.setIdListaCompra(idListaCompra);
-
-        ProductoListaService service = new ProductoListaService();
-
-        if (ProductoListaValidator.validarProductoLista(producto)) {
-            service.agregarProducto(producto);
-            JOptionPane.showMessageDialog(this, "Producto agregado exitosamente");
-            cargarProductos(); 
-            limpiarCampos();
-        } else {
-            JOptionPane.showMessageDialog(this, "Por favor, llena todos los campos correctamente");
-        }
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "Precio inválido");
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
-        e.printStackTrace();
+    if (!nombre.isBlank() && !precio.isBlank()) {
+        DefaultTableModel model = (DefaultTableModel) tablaCompra.getModel();
+        model.addRow(new Object[]{nombre, precio});
+        txtNombre.setText("");
+        txtPrecio.setText("");
+    } else {
+        JOptionPane.showMessageDialog(this, "Debes llenar ambos campos.");
     }
-        
-        
-        
-        
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
-        // TODO add your handling code here:
-        
-       int fila = tablaCompra.getSelectedRow();
-    if (fila == -1) {
-        JOptionPane.showMessageDialog(this, "Selecciona un producto para editar");
-        return;
-    }
-
-    try {
-        int id = (int) tablaCompra.getValueAt(fila, 0);
+    
+  int filaSeleccionada = tablaCompra.getSelectedRow();
+    if (filaSeleccionada != -1) {
         String nuevoNombre = txtNombre.getText();
-        double nuevoPrecio = Double.parseDouble(txtPrecio.getText());
-        int idListaCompra = obtenerIdListaCompraDelUsuario();
+        String nuevoPrecio = txtPrecio.getText();
 
-        ProductoListaDTO producto = new ProductoListaDTO();
-        producto.setId(id);
-        producto.setNombreProducto(nuevoNombre);
-        producto.setPrecio(nuevoPrecio);
-        producto.setIdListaCompra(idListaCompra);
-
-        if (ProductoListaValidator.validarProductoLista(producto)) {
-            ProductoListaService service = new ProductoListaService();
-            service.editarProducto(producto);
-            JOptionPane.showMessageDialog(this, "Producto editado exitosamente");
-            cargarProductos();
-            limpiarCampos();
+        if (!nuevoNombre.isBlank() && !nuevoPrecio.isBlank()) {
+            DefaultTableModel model = (DefaultTableModel) tablaCompra.getModel();
+            model.setValueAt(nuevoNombre, filaSeleccionada, 0);
+            model.setValueAt(nuevoPrecio, filaSeleccionada, 1);
+            txtNombre.setText("");
+            txtPrecio.setText("");
         } else {
-            JOptionPane.showMessageDialog(this, "Por favor completa correctamente los campos");
+            JOptionPane.showMessageDialog(this, "Debes llenar ambos campos para editar.");
         }
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "Precio inválido");
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, "Error al editar: " + e.getMessage());
-    } 
-        
-        
+    } else {
+        JOptionPane.showMessageDialog(this, "Selecciona una fila para editar.");
+    }
     }//GEN-LAST:event_btnEditarActionPerformed
 
     private void txtPrecioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPrecioActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtPrecioActionPerformed
 
-    private void limpiarCampos() {
-    txtNombre.setText("");
-    txtPrecio.setText("");
-    }
-    
-    private int obtenerIdListaCompraDelUsuario() throws SQLException {
-    int idUsuario = obtenerIdUsuarioActual(); 
-    try (Connection conn = DatabaseConfig.getConnection();
-         PreparedStatement stmt = conn.prepareStatement("SELECT idListaCompra FROM ListaCompra WHERE idUsuario = ?")) {
-        stmt.setInt(1, idUsuario);
-        ResultSet rs = stmt.executeQuery();
-        if (rs.next()) {
-            return rs.getInt("idListaCompra");
-        } else {
-            throw new SQLException("No se encontró lista de compras");
-        }
-    }
-}
-    
-    private void cargarProductos() {
-        
-        try {
-        int idListaCompra = obtenerIdListaCompraDelUsuario();
-        ProductoListaService service = new ProductoListaService();
-        List<ProductoListaDTO> productos = service.obtenerProductosPorLista(idListaCompra);
-
-        DefaultTableModel model = new DefaultTableModel();
-        model.addColumn("ID");
-        model.addColumn("Producto");
-        model.addColumn("Precio");
-
-        for (ProductoListaDTO p : productos) {
-            model.addRow(new Object[]{p.getId(), p.getNombreProducto(), p.getPrecio()});
-        }
-
-        tablaCompra.setModel(model);
-
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, "Error al cargar productos: " + e.getMessage());
-        e.printStackTrace();
-    }
-    }
-    
-    private int obtenerIdUsuarioActual() {
-      return  this.idUsuario;
-    }
+   
     
     
-    private void asegurarListaCompra() {
-    int idUsuario = obtenerIdUsuarioActual();
-
-    try (Connection conn = DatabaseConfig.getConnection();
-         PreparedStatement checkStmt = conn.prepareStatement("SELECT idListaCompra FROM ListaCompra WHERE idUsuario = ?");
-         PreparedStatement insertStmt = conn.prepareStatement("INSERT INTO ListaCompra (idUsuario) VALUES (?)")) {
-
-        checkStmt.setInt(11, idUsuario);
-        ResultSet rs = checkStmt.executeQuery();
-
-        if (!rs.next()) {
-            insertStmt.setInt(11, idUsuario);
-            insertStmt.executeUpdate();
-        }
-
-    } catch (SQLException e) {
-        JOptionPane.showMessageDialog(this, "Error asegurando lista de compras: " + e.getMessage());
-    }
-}
+   
     /**
      * @param args the command line arguments
      */
